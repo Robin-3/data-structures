@@ -60,7 +60,8 @@ pub fn dynamic_array() {
     println!("  5. Eliminar de una posición arbitraria (indice: {position}, planeta: {planet:?})\n    {planets:?}");
 }
 
-use dynamic_array_implementation::{DynamicArray, Exceptions};
+use dynamic_array_implementation::DynamicArray;
+use exceptions::Exceptions;
 
 pub fn da_implementation() -> Result<(), Exceptions> {
     println!("Implementación de un array dinámico");
@@ -89,10 +90,7 @@ pub fn da_implementation() -> Result<(), Exceptions> {
 }
 
 pub mod dynamic_array_implementation {
-    #[derive(Debug)]
-    pub enum Exceptions {
-        IndexOutOfBounds,
-    }
+    use exceptions::Exceptions;
 
     // A dynamic array implementation based on a static array
     #[derive(Debug)]
@@ -105,12 +103,12 @@ pub mod dynamic_array_implementation {
         capacity: usize,
     }
 
-    impl<T: Copy + std::fmt::Debug> DynamicArray<T> {
+    impl<T: Copy> DynamicArray<T> {
         // Constructs a new dynamic array with the given initial capacity
         pub fn new(capacity: usize) -> Self {
             let array: Vec<Option<T>> = vec![None; capacity];
 
-            DynamicArray {
+            Self {
                 array,
                 size: 0,
                 capacity,
@@ -131,7 +129,7 @@ pub mod dynamic_array_implementation {
                 capacity
             };
 
-            DynamicArray {
+            Self {
                 array,
                 size,
                 capacity,
@@ -198,7 +196,7 @@ pub mod dynamic_array_implementation {
         }
 
         // Returns the current size of the dynamic array
-        pub fn size(&self) -> usize {
+        pub const fn size(&self) -> usize {
             self.size
         }
 

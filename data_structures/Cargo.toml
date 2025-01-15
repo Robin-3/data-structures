@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 array = { path = "../array" }
+exceptions = { workspace = true }
+linked_list = { path = "../linked_list" }

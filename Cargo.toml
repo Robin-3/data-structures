@@ -1,3 +1,6 @@
 [workspace]
-members = ["array", "data_structures"]
+members = ["array", "data_structures", "exceptions", "linked_list"]
 resolver = "2"
+
+[workspace.dependencies]
+exceptions = { path = "./exceptions" }
