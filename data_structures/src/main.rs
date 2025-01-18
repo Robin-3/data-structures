@@ -1,4 +1,4 @@
-use array::{sa_implementation, da_implementation, dynamic_array, static_array};
+use array::{da_implementation, dynamic_array, sa_implementation, static_array};
 use exceptions::Exceptions;
 use linked_list::ll_implementation;
 
