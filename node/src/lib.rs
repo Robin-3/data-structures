@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Node<T: Clone> {
     data: T,
     next: Option<Box<Node<T>>>,

@@ -1,10 +1,14 @@
 use exceptions::Exceptions;
 use node::Node;
+use std::fmt::{Debug, Formatter, Result as fmtResult};
 
-#[derive(Debug)]
 pub struct LinkedList<T: Clone> {
     head: Option<Box<Node<T>>>,
     size: usize,
+}
+
+pub struct LinkedListIterator<T: Clone> {
+    current: Option<Box<Node<T>>>,
 }
 
 impl<T: Clone> LinkedList<T> {
@@ -124,6 +128,10 @@ impl<T: Clone> LinkedList<T> {
 
     // Deletes the last node from this list
     // pub fn delete_last(&mut self) -> T {}
+
+    pub fn iter(&self) -> LinkedListIterator<T> {
+        LinkedListIterator { current: self.head.clone() }
+    }
 }
 
 impl<T: Copy + PartialEq> LinkedList<T> {
@@ -143,5 +151,33 @@ impl<T: Copy + PartialEq> LinkedList<T> {
         Err(Exceptions::NoSuchElement(String::from(
             "Predecessor not found",
         )))
+    }
+}
+
+impl<T: Clone> Iterator for LinkedListIterator<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let node = self.current.clone();
+        match node {
+            Some(value) => {
+                self.current = value.get_next().clone();
+                Some(value.get().clone())
+            },
+            None => None,
+        }
+    }
+}
+
+impl<T: Clone + Debug> Debug for LinkedList<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmtResult {
+        write!(f, "[")?;
+        for (index, value) in self.iter().enumerate() {
+            if index > 0 {
+                write!(f, ", ")?;
+            }
+            write!(f, "{value:?}")?;
+        }
+        write!(f, "]")
     }
 }
