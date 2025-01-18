@@ -93,7 +93,7 @@ pub fn da_implementation() -> Result<(), Exceptions> {
     Ok(())
 }
 
-pub fn aa_implementation() -> Result<(), Exceptions> {
+pub fn sa_implementation() -> Result<(), Exceptions> {
     println!("Implementación de un array estático");
     // 1. Initialization
     let planets: StaticArray<&str> = StaticArray::new(5);

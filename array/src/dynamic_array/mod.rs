@@ -221,7 +221,7 @@ impl<T: Clone> DynamicArray<T> {
     /// ```
     /// # use array::dynamic_array::DynamicArray;
     /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
-    /// 
+    ///
     /// assert_eq!(array.len(), array.capacity());
     ///
     /// // Inserta el valor 0 al inicio.

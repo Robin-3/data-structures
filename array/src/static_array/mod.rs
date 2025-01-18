@@ -223,7 +223,7 @@ impl<T: Clone> StaticArray<T> {
     /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     ///
     /// assert_eq!(array.len(), array.capacity());
-    /// 
+    ///
     /// // Inserta el valor 0 al inicio.
     /// array.unshift(0);
     ///
@@ -245,8 +245,8 @@ impl<T: Clone> StaticArray<T> {
     /// - El arreglo no se expande dinámicamente.
     /// - Si el arreglo está lleno, el último elemento se descarta para mantener la capacidad fija.
     pub fn unshift(&mut self, value: T) {
-        let size: usize = if self.len+1 < self.capacity {
-            self.len+1
+        let size: usize = if self.len + 1 < self.capacity {
+            self.len + 1
         } else {
             self.capacity
         };
@@ -323,7 +323,7 @@ impl<T: Clone> StaticArray<T> {
     /// - Los elementos desde el índice especificado hasta el final se desplazan una posición hacia la derecha.
     /// - Si la longitud actual es igual a la capacidad, el último elemento se descarta para hacer espacio al nuevo valor.
     /// - Este método no redimensiona el arreglo, ya que tiene una capacidad fija.
-    /// 
+    ///
     /// # Ejemplo
     /// ```
     /// # use array::static_array::StaticArray;
@@ -352,8 +352,8 @@ impl<T: Clone> StaticArray<T> {
         if index >= self.len {
             return Err(Exceptions::IndexOutOfBounds);
         }
-        let size: usize = if self.len+1 < self.capacity {
-            self.len+1
+        let size: usize = if self.len + 1 < self.capacity {
+            self.len + 1
         } else {
             self.capacity
         };
@@ -486,7 +486,7 @@ impl<T: Clone> StaticArray<T> {
     pub const fn capacity(&self) -> usize {
         self.capacity
     }
-    
+
     /// Verifica si el arreglo dinámico está vacío.
     ///
     /// # Retornos
