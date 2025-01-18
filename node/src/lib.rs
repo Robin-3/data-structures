@@ -9,19 +9,19 @@ impl<T: Clone> Node<T> {
         Self { data, next: None }
     }
 
-    pub fn get(&self) -> &T {
+    pub const fn get(&self) -> &T {
         &self.data
     }
 
-    pub fn get_mut(&mut self) -> &mut T {
+    pub const fn get_mut(&mut self) -> &mut T {
         &mut self.data
     }
 
-    pub fn get_next(&self) -> &Option<Box<Node<T>>> {
+    pub const fn get_next(&self) -> &Option<Box<Self>> {
         &self.next
     }
 
-    pub fn get_next_mut(&mut self) -> &mut Option<Box<Node<T>>> {
+    pub fn get_next_mut(&mut self) -> &mut Option<Box<Self>> {
         &mut self.next
     }
 
@@ -29,7 +29,7 @@ impl<T: Clone> Node<T> {
         self.data = data;
     }
 
-    pub fn set_next(&mut self, next: Option<Box<Node<T>>>) {
+    pub fn set_next(&mut self, next: Option<Box<Self>>) {
         self.next = next;
     }
 }

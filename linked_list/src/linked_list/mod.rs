@@ -12,6 +12,7 @@ pub struct LinkedListIterator<T: Clone> {
 }
 
 impl<T: Clone> LinkedList<T> {
+    #[must_use]
     pub const fn new() -> Self {
         Self {
             head: None,
@@ -29,6 +30,7 @@ impl<T: Clone> LinkedList<T> {
     }
 
     // Return true if there are no node in the list
+    #[must_use]
     pub const fn is_empty(&self) -> bool {
         self.size == 0
     }
@@ -129,8 +131,11 @@ impl<T: Clone> LinkedList<T> {
     // Deletes the last node from this list
     // pub fn delete_last(&mut self) -> T {}
 
+    #[must_use]
     pub fn iter(&self) -> LinkedListIterator<T> {
-        LinkedListIterator { current: self.head.clone() }
+        LinkedListIterator {
+            current: self.head.clone(),
+        }
     }
 }
 
@@ -154,6 +159,12 @@ impl<T: Copy + PartialEq> LinkedList<T> {
     }
 }
 
+impl<T: Clone> Default for LinkedList<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Clone> Iterator for LinkedListIterator<T> {
     type Item = T;
 
@@ -161,11 +172,20 @@ impl<T: Clone> Iterator for LinkedListIterator<T> {
         let node = self.current.clone();
         match node {
             Some(value) => {
-                self.current = value.get_next().clone();
+                self.current.clone_from(value.get_next());
                 Some(value.get().clone())
-            },
+            }
             None => None,
         }
+    }
+}
+
+impl<T: Clone> IntoIterator for &LinkedList<T> {
+    type Item = T;
+    type IntoIter = LinkedListIterator<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 
