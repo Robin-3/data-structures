@@ -2,26 +2,26 @@ use exceptions::Exceptions;
 use std::fmt::{Debug, Formatter, Result as fmtResult};
 
 #[derive(Clone)]
-pub struct DynamicArray<T: Clone> {
+pub struct StaticArray<T: Clone> {
     array: Box<[Option<T>]>,
     len: usize,
     capacity: usize,
     current: usize,
 }
 
-impl<T: Clone> DynamicArray<T> {
-    /// Crea un nuevo arreglo dinámico vacío con la capacidad especificada.
+impl<T: Clone> StaticArray<T> {
+    /// Crea un nuevo arreglo estático vacío con la capacidad especificada.
     ///
     /// # Parámetros
-    /// - `capacity`: La capacidad inicial del arreglo dinámico. Define el número máximo de elementos que puede contener antes de necesitar redimensionarse.
+    /// - `capacity`: La capacidad inicial del arreglo estático. Define el número máximo de elementos que puede contener.
     ///
     /// # Retornos
-    /// - Devuelve una nueva instancia de `DynamicArray` con la capacidad especificada y sin elementos iniciales.
+    /// - Devuelve una nueva instancia de `StaticArray` con la capacidad especificada y sin elementos iniciales.
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let array: DynamicArray<i32> = DynamicArray::new(5);
+    /// # use array::static_array::StaticArray;
+    /// let array: StaticArray<i32> = StaticArray::new(5);
     ///
     /// // El arreglo tiene capacidad para 5 elementos, pero está vacío.
     /// assert_eq!(array.capacity(), 5);
@@ -30,7 +30,7 @@ impl<T: Clone> DynamicArray<T> {
     /// ```
     ///
     /// # Notas
-    /// - El arreglo dinámico se inicializa con `None` en cada posición, lo que ocupa espacio en memoria según la capacidad especificada.
+    /// - El arreglo estático se inicializa con `None` en cada posición, lo que ocupa espacio en memoria según la capacidad especificada.
     /// - Para agregar elementos, utiliza métodos como `push` o `unshift`.
     pub fn new(capacity: usize) -> Self {
         let mut vec: Vec<Option<T>> = Vec::with_capacity(capacity);
@@ -47,14 +47,14 @@ impl<T: Clone> DynamicArray<T> {
         }
     }
 
-    /// Crea un nuevo arreglo dinámico con una capacidad especificada y elementos iniciales.
+    /// Crea un nuevo arreglo estático con una capacidad especificada y elementos iniciales.
     ///
     /// # Parámetros
-    /// - `capacity`: La capacidad inicial del arreglo dinámico. Define el número máximo de elementos que puede contener antes de necesitar redimensionarse.
+    /// - `capacity`: La capacidad inicial del arreglo dinámico. Define el número máximo de elementos que puede contener.
     /// - `values`: Un slice de valores que se utilizarán para inicializar el arreglo.
     ///
     /// # Retornos
-    /// - Devuelve una nueva instancia de `DynamicArray` inicializada con los valores proporcionados.
+    /// - Devuelve una nueva instancia de `StaticArray` inicializada con los valores proporcionados.
     ///
     /// # Comportamiento
     /// - Si la longitud de `values` es menor que `capacity`, los valores restantes del arreglo se inicializan como `None`.
@@ -62,8 +62,8 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let array = DynamicArray::with_values(5, &[1, 2, 3]);
+    /// # use array::static_array::StaticArray;
+    /// let array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
     /// // El arreglo tiene capacidad para 5 elementos, pero solo 3 están inicializados.
     /// assert_eq!(array.capacity(), 5);
@@ -74,7 +74,7 @@ impl<T: Clone> DynamicArray<T> {
     /// assert!(array.get(3).is_err()); // Índices fuera de los valores iniciales retornan error.
     ///
     /// // Si se excede la capacidad, solo se toman los primeros elementos.
-    /// let array = DynamicArray::with_values(2, &[10, 20, 30]);
+    /// let array = StaticArray::with_values(2, &[10, 20, 30]);
     /// assert_eq!(array.len(), array.capacity());
     /// assert_eq!(array.len(), 2);
     /// assert_eq!(array.get(1), Ok(&20));
@@ -82,7 +82,7 @@ impl<T: Clone> DynamicArray<T> {
     /// ```
     ///
     /// # Notas
-    /// - El arreglo dinámico reserva espacio en memoria para la capacidad especificada, pero su longitud inicial (`len`) dependerá de los valores proporcionados.
+    /// - El arreglo estático reserva espacio en memoria para la capacidad especificada, pero su longitud inicial (`len`) dependerá de los valores proporcionados.
     /// - Para agregar más elementos después de la creación, utiliza métodos como `push` o `unshift`.
     pub fn with_values(capacity: usize, values: &[T]) -> Self {
         let size: usize = if values.len() < capacity {
@@ -119,9 +119,9 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
+    /// # use array::static_array::StaticArray;
     /// # use exceptions::Exceptions;
-    /// let array = DynamicArray::with_values(4, &[1, 2, 3]);
+    /// let array = StaticArray::with_values(4, &[1, 2, 3]);
     /// assert_eq!(array.get(1), Ok(&2));
     /// assert!(array.get(4).is_err());
     /// ```
@@ -149,9 +149,9 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
+    /// # use array::static_array::StaticArray;
     /// # use exceptions::Exceptions;
-    /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
+    /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     /// if let Ok(value) = array.get_mut(1) {
     ///     *value = 42;
     /// }
@@ -170,7 +170,7 @@ impl<T: Clone> DynamicArray<T> {
         }
     }
 
-    /// Establece un valor en el índice especificado del arreglo dinámico.
+    /// Establece un valor en el índice especificado del arreglo estático.
     ///
     /// # Parámetros
     /// - `index`: El índice en el que se desea establecer el valor. Debe estar en el rango `0..self.len`.
@@ -182,9 +182,9 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
+    /// # use array::static_array::StaticArray;
     /// # use exceptions::Exceptions;
-    /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
+    /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     /// assert_eq!(array.set(1, 42), Ok(()));
     /// assert_eq!(array.get(1), Ok(&42));
     ///
@@ -207,105 +207,108 @@ impl<T: Clone> DynamicArray<T> {
         Ok(())
     }
 
-    /// Inserta un elemento al inicio del arreglo dinámico, desplazando los elementos existentes hacia la derecha.
+    /// Inserta un elemento al inicio del arreglo estático, desplazando los elementos existentes hacia la derecha.
     ///
     /// # Parámetros
     /// - `value`: El valor que se desea insertar al inicio del arreglo.
     ///
     /// # Comportamiento
-    /// - Si la capacidad actual del arreglo es `0`, se redimensiona automáticamente a `4`.
-    /// - Si la longitud actual (`len`) es igual a la capacidad (`capacity`), el arreglo se redimensiona automáticamente, duplicando su capacidad antes de la inserción.
-    /// - Los elementos existentes se desplazan una posición hacia la derecha para dejar espacio al nuevo elemento.
+    /// - Si la longitud actual (`len`) es menor que la capacidad (`capacity`), el nuevo elemento se inserta en el índice `0`, y los elementos existentes se desplazan una posición hacia la derecha.
+    /// - Si la longitud actual es igual a la capacidad, el último elemento se descarta para hacer espacio al nuevo valor.
+    /// - Este método no redimensiona el arreglo, ya que `StaticArray` tiene una capacidad fija.
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
-    /// 
-    /// assert_eq!(array.len(), array.capacity());
+    /// # use array::static_array::StaticArray;
+    /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     ///
+    /// assert_eq!(array.len(), array.capacity());
+    /// 
     /// // Inserta el valor 0 al inicio.
     /// array.unshift(0);
     ///
-    /// // El arreglo ahora es [0, 1, 2, 3].
+    /// // El arreglo ahora es [0, 1, 2], el último elemento (3) fue descartado.
     /// assert_eq!(array.get(0), Ok(&0));
     /// assert_eq!(array.get(1), Ok(&1));
-    /// assert_eq!(array.len(), 4);
-    /// assert_ne!(array.len(), array.capacity());
+    /// assert_eq!(array.len(), 3);
+    /// assert_eq!(array.len(), array.capacity());
     ///
-    /// // Inserta un valor en un arreglo vacío.
-    /// let mut empty_array = DynamicArray::new(0);
-    /// assert_eq!(empty_array.capacity(), 0);
-    /// empty_array.unshift(42);
-    /// assert_eq!(empty_array.capacity(), 4);
-    /// assert_eq!(empty_array.len(), 1);
-    /// assert_eq!(empty_array.get(0), Ok(&42));
+    /// // Inserta en un arreglo parcialmente lleno.
+    /// let mut array = StaticArray::new(5);
+    /// array.unshift(42);
+    /// assert_eq!(array.len(), 1);
+    /// assert_eq!(array.get(0), Ok(&42));
     /// ```
     ///
     /// # Notas
-    /// - Este método puede modificar la capacidad del arreglo dinámico si no hay espacio suficiente para el nuevo elemento.
     /// - El desplazamiento de elementos tiene un costo proporcional a la longitud actual del arreglo (`O(n)`), por lo que es menos eficiente que agregar al final (`push`).
+    /// - El arreglo no se expande dinámicamente.
+    /// - Si el arreglo está lleno, el último elemento se descarta para mantener la capacidad fija.
     pub fn unshift(&mut self, value: T) {
-        if self.capacity == 0 {
-            self.resize(4);
-        } else if self.len == self.capacity {
-            self.resize(self.capacity * 2);
-        }
+        let size: usize = if self.len+1 < self.capacity {
+            self.len+1
+        } else {
+            self.capacity
+        };
 
         let arr = &self.array.clone();
-        for i in (1..=self.len).rev() {
+        for i in (1..size).rev() {
             self.array[i].clone_from(&arr[i - 1]);
         }
         self.array[0] = Some(value);
-        self.len += 1;
+        if self.len < self.capacity {
+            self.len += 1;
+        }
     }
 
-    /// Agrega un elemento al final del arreglo dinámico.
+    /// Agrega un elemento al final del arreglo estático.
     ///
     /// # Parámetros
     /// - `value`: El valor que se desea agregar al final del arreglo.
     ///
+    /// # Retornos
+    /// - `Ok(())`: Si el elemento se agrega correctamente al arreglo.
+    /// - `Err(Exceptions::IndexOutOfBounds)`: Si no hay espacio disponible en el arreglo para agregar el nuevo elemento.
+    ///
     /// # Comportamiento
-    /// - Si la capacidad actual del arreglo es `0`, se redimensiona automáticamente a `4`.
-    /// - Si la longitud actual (`len`) es igual a la capacidad (`capacity`), el arreglo se redimensiona automáticamente, duplicando su capacidad antes de agregar el nuevo elemento.
-    /// - El nuevo elemento se almacena al final del arreglo, incrementando su longitud en `1`.
+    /// - El método no redimensiona el arreglo. Si la longitud actual (`len`) es igual a la capacidad (`capacity`), se retorna un error.
+    /// - El nuevo elemento se almacena al final del arreglo y la longitud (`len`) se incrementa en `1`.
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::new(0);
+    /// # use array::static_array::StaticArray;
+    /// # use exceptions::Exceptions;
+    /// let mut array = StaticArray::new(3);
     ///
     /// // Agregar elementos al arreglo.
-    /// array.push(10);
-    /// array.push(20);
+    /// assert_eq!(array.push(10), Ok(()));
+    /// assert_eq!(array.push(20), Ok(()));
     ///
     /// // El arreglo ahora contiene [10, 20].
     /// assert_eq!(array.len(), 2);
-    /// assert_eq!(array.get(0), Ok(&10));
     /// assert_eq!(array.get(1), Ok(&20));
     ///
-    /// // Agregar más elementos hace que la capacidad crezca automáticamente.
-    /// for i in 0..10 {
-    ///     array.push(i);
-    /// }
-    /// assert_eq!(array.len(), 12); // La longitud crece con los nuevos elementos.
-    /// assert!(array.capacity() >= array.len());
+    /// // Intentar agregar más elementos que la capacidad resulta en un error.
+    /// assert_eq!(array.push(30), Ok(()));
+    /// assert!(array.push(40).is_err());
     /// ```
     ///
+    /// # Errors
+    /// Este método retornará `Exceptions::IndexOutOfBounds` si:
+    /// - La longitud actual del arreglo (`len`) es igual a su capacidad máxima (`capacity`).
+    ///
     /// # Notas
-    /// - Este método puede modificar la capacidad del arreglo dinámico si no hay espacio suficiente para el nuevo elemento.
-    /// - El costo de redimensionar (si es necesario) es amortizado, lo que lo hace eficiente para agregar múltiples elementos consecutivos.
-    pub fn push(&mut self, value: T) {
-        if self.capacity == 0 {
-            self.resize(4);
-        } else if self.len == self.capacity {
-            self.resize(self.capacity * 2);
+    /// - Este método no ajusta la capacidad del arreglo automáticamente.
+    pub fn push(&mut self, value: T) -> Result<(), Exceptions> {
+        if self.len == self.capacity {
+            return Err(Exceptions::IndexOutOfBounds);
         }
         self.array[self.len] = Some(value);
         self.len += 1;
+        Ok(())
     }
 
-    /// Inserta un valor en el índice especificado del arreglo dinámico, desplazando los elementos existentes.
+    /// Inserta un valor en el índice especificado del arreglo estático, desplazando los elementos existentes.
     ///
     /// # Parámetros
     /// - `index`: El índice en el que se desea insertar el valor. Debe estar en el rango `0..self.len`.
@@ -316,21 +319,24 @@ impl<T: Clone> DynamicArray<T> {
     /// - `Err(Exceptions::IndexOutOfBounds)`: Si el índice está fuera de los límites de la longitud actual del arreglo.
     ///
     /// # Comportamiento
-    /// - Si la longitud actual (`len`) es igual a la capacidad (`capacity`), el arreglo dinámico se redimensiona automáticamente para duplicar su capacidad antes de insertar el valor.
+    /// - Si la longitud actual (`len`) es menor que la capacidad (`capacity`), el nuevo elemento se inserta, y los elementos existentes se desplazan una posición hacia la derecha.
     /// - Los elementos desde el índice especificado hasta el final se desplazan una posición hacia la derecha.
-    ///
+    /// - Si la longitud actual es igual a la capacidad, el último elemento se descarta para hacer espacio al nuevo valor.
+    /// - Este método no redimensiona el arreglo, ya que tiene una capacidad fija.
+    /// 
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
+    /// # use array::static_array::StaticArray;
     /// # use exceptions::Exceptions;
-    /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
+    /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     ///
     /// // Inserta el valor 42 en el índice 1.
     /// assert_eq!(array.insert(1, 42), Ok(()));
     ///
-    /// // El arreglo ahora es [1, 42, 2, 3].
+    /// // El arreglo ahora es [1, 42, 2].
     /// assert_eq!(array.get(1), Ok(&42));
     /// assert_eq!(array.get(2), Ok(&2));
+    /// assert_eq!(array.len(), 3);
     ///
     /// // Intentar insertar fuera de los límites retorna un error.
     /// assert!(array.insert(5, 10).is_err());
@@ -341,22 +347,25 @@ impl<T: Clone> DynamicArray<T> {
     /// - `index` es mayor o igual a `self.len`.
     ///
     /// # Notas
-    /// - Este método puede modificar la capacidad del arreglo dinámico si no hay espacio suficiente para insertar un nuevo elemento.
-    /// - Inserciones repetidas pueden tener un costo significativo si se requiere redimensionar el arreglo frecuentemente.
+    /// - Este método no puede modificar la capacidad del arreglo estático, eliminará el último elemento si no hay espacio suficiente para insertar el nuevo elemento.
     pub fn insert(&mut self, index: usize, value: T) -> Result<(), Exceptions> {
         if index >= self.len {
             return Err(Exceptions::IndexOutOfBounds);
         }
-        if self.len == self.capacity {
-            self.resize(self.capacity * 2);
-        }
+        let size: usize = if self.len+1 < self.capacity {
+            self.len+1
+        } else {
+            self.capacity
+        };
 
         let arr = &self.array.clone();
-        for i in ((index + 1)..=self.len).rev() {
+        for i in ((index + 1)..size).rev() {
             self.array[i].clone_from(&arr[i - 1]);
         }
         self.array[index] = Some(value);
-        self.len += 1;
+        if self.len < self.capacity {
+            self.len += 1;
+        }
         Ok(())
     }
 
@@ -371,20 +380,18 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Comportamiento
     /// - Los elementos posteriores al índice especificado se desplazan una posición hacia la izquierda para llenar el espacio vacío.
-    /// - Si, después de la eliminación, la longitud del arreglo es menor que la mitad de su capacidad y la capacidad es mayor que `1`, el arreglo se redimensiona automáticamente para reducir su capacidad a la mitad.
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
+    /// # use array::static_array::StaticArray;
     /// # use exceptions::Exceptions;
-    /// let mut array = DynamicArray::with_values(10, &[1, 2, 3]);
+    /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
     /// // Eliminar el elemento en el índice 1.
     /// let removed = array.remove(1);
     /// assert_eq!(removed, Ok(2)); // El valor eliminado es 2.
     /// assert_eq!(array.len(), 2); // La longitud se reduce.
     /// assert_eq!(array.get(1), Ok(&3)); // Los elementos se desplazan.
-    /// assert!(array.capacity() < 10);
     ///
     /// // Intentar eliminar fuera de los límites retorna un error.
     /// assert!(array.remove(5).is_err());
@@ -393,10 +400,6 @@ impl<T: Clone> DynamicArray<T> {
     /// # Errors
     /// Este método retornará `Exceptions::IndexOutOfBounds` si:
     /// - `index` es mayor o igual a `self.len`.
-    ///
-    /// # Notas
-    /// - Este método puede modificar la capacidad del arreglo dinámico si, después de la eliminación, su longitud es menor que la mitad de su capacidad.
-    /// - Si necesitas eliminar elementos sin redimensionar automáticamente, deberías implementar un método alternativo.
     pub fn remove(&mut self, index: usize) -> Result<T, Exceptions> {
         let value = match (index, self.array.get(index)) {
             (i, _) if i >= self.len => return Err(Exceptions::IndexOutOfBounds),
@@ -413,13 +416,10 @@ impl<T: Clone> DynamicArray<T> {
         }
         self.array[self.len - 1] = None;
         self.len -= 1;
-        if self.len < self.capacity / 2 && self.capacity > 1 {
-            self.resize(self.capacity / 2);
-        }
         Ok(value)
     }
 
-    /// Devuelve la cantidad de elementos almacenados actualmente en el arreglo dinámico.
+    /// Devuelve la cantidad de elementos almacenados actualmente en el arreglo estático.
     ///
     /// # Retornos
     /// - `usize`: El número de elementos actualmente presentes en el arreglo.
@@ -430,8 +430,8 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::with_values(5, &[1, 2, 3]);
+    /// # use array::static_array::StaticArray;
+    /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
     /// // El arreglo tiene 3 elementos inicializados.
     /// assert_eq!(array.len(), 3);
@@ -446,7 +446,7 @@ impl<T: Clone> DynamicArray<T> {
     /// ```
     ///
     /// # Notas
-    /// - La longitud no debe confundirse con la capacidad, que define el número máximo de elementos que el arreglo puede almacenar sin redimensionarse.
+    /// - La longitud no debe confundirse con la capacidad, que define el número máximo de elementos que el arreglo puede almacenar.
     /// - Para verificar si el arreglo está vacío, utiliza el método `is_empty`.
     /// - Este método está marcado como `#[must_use]`, lo que indica que su valor de retorno debe ser utilizado; de lo contrario, se generará una advertencia.
     #[must_use]
@@ -454,10 +454,10 @@ impl<T: Clone> DynamicArray<T> {
         self.len
     }
 
-    /// Devuelve la capacidad actual del arreglo dinámico.
+    /// Devuelve la capacidad actual del arreglo estático.
     ///
     /// # Retornos
-    /// - `usize`: El número máximo de elementos que el arreglo puede almacenar sin redimensionarse.
+    /// - `usize`: El número máximo de elementos que el arreglo puede almacenar.
     ///
     /// # Comportamiento
     /// - La capacidad define el tamaño del espacio reservado en memoria para los elementos del arreglo.
@@ -465,28 +465,28 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::new(4);
+    /// # use array::static_array::StaticArray;
+    /// let mut array = StaticArray::new(4);
     ///
     /// // La capacidad inicial es 4.
     /// assert_eq!(array.capacity(), 4);
     ///
     /// // Después de agregar elementos, la capacidad puede crecer.
     /// for i in 0..5 {
-    ///     array.push(i);
+    ///     array.unshift(i);
     /// }
-    /// assert!(array.capacity() > 4); // La capacidad se redimensiona automáticamente.
+    /// assert_eq!(array.capacity(), 4); // La capacidad define el limite de espacio disponible.
     /// ```
     ///
     /// # Notas
     /// - La capacidad inicial puede configurarse al crear el arreglo mediante `new` o `with_values`.
-    /// - Si la longitud (`len`) del arreglo alcanza la capacidad, esta se redimensiona automáticamente, generalmente duplicándose.
+    /// - Si la longitud (`len`) del arreglo alcanza la capacidad, está no acepta más valores, usualmente elimina un valor para crear espacio para uno nuevo.
     /// - Este método está marcado como `#[must_use]`, lo que indica que su valor de retorno debe ser utilizado; de lo contrario, se generará una advertencia.
     #[must_use]
     pub const fn capacity(&self) -> usize {
         self.capacity
     }
-
+    
     /// Verifica si el arreglo dinámico está vacío.
     ///
     /// # Retornos
@@ -495,8 +495,8 @@ impl<T: Clone> DynamicArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::new(4);
+    /// # use array::static_array::StaticArray;
+    /// let mut array = StaticArray::new(4);
     ///
     /// // Un arreglo recién creado está vacío.
     /// assert!(array.is_empty());
@@ -518,58 +518,9 @@ impl<T: Clone> DynamicArray<T> {
     pub const fn is_empty(&self) -> bool {
         self.len == 0
     }
-
-    /// Redimensiona la capacidad del arreglo dinámico.
-    ///
-    /// # Parámetros
-    /// - `new_capacity`: La nueva capacidad del arreglo dinámico. Define el número máximo de elementos que puede contener después de redimensionarse.
-    ///
-    /// # Comportamiento
-    /// - Si `new_capacity` es mayor que la capacidad actual, se crea un nuevo arreglo con la capacidad especificada y los elementos existentes se copian en él.
-    /// - Si `new_capacity` es menor que la capacidad actual, se truncan los elementos que excedan la nueva capacidad.
-    ///
-    /// # Ejemplo
-    /// ```
-    /// # use array::dynamic_array::DynamicArray;
-    /// let mut array = DynamicArray::with_values(3, &[1, 2, 3]);
-    ///
-    /// // Redimensiona para aumentar la capacidad.
-    /// array.resize(5);
-    /// assert_eq!(array.len(), 3);
-    /// assert_eq!(array.capacity(), 5);
-    /// assert!(array.get(4).is_err()); // Las nuevas posiciones están vacías.
-    ///
-    /// // Redimensiona para reducir la capacidad.
-    /// array.resize(2);
-    /// assert_eq!(array.len(), array.capacity());
-    /// assert_eq!(array.capacity(), 2);
-    /// assert!(array.get(2).is_err());
-    ///
-    /// // Redimensionar a capacidad 0.
-    /// array.resize(0);
-    /// assert_eq!(array.len(), 0);
-    /// ```
-    ///
-    /// # Notas
-    /// - Redimensionar a una capacidad menor que la longitud actual (`len`) eliminará elementos desde el final hasta ajustarse a la nueva capacidad.
-    pub fn resize(&mut self, new_capacity: usize) {
-        let mut new_array: Box<[Option<T>]> = vec![None; new_capacity].into_boxed_slice();
-
-        for (index, value) in self.array.iter().enumerate() {
-            if let Some(v) = new_array.get_mut(index) {
-                v.clone_from(value);
-            }
-        }
-
-        self.array = new_array;
-        self.capacity = new_capacity;
-        if self.len > self.capacity {
-            self.len = self.capacity;
-        }
-    }
 }
 
-impl<T: Clone> Iterator for DynamicArray<T> {
+impl<T: Clone> Iterator for StaticArray<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -582,7 +533,7 @@ impl<T: Clone> Iterator for DynamicArray<T> {
     }
 }
 
-impl<T: Clone + Debug> Debug for DynamicArray<T> {
+impl<T: Clone + Debug> Debug for StaticArray<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmtResult {
         write!(f, "[")?;
         for (index, value) in self.clone().enumerate() {

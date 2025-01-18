@@ -61,9 +61,11 @@ pub fn dynamic_array() {
 }
 
 pub mod dynamic_array;
+pub mod static_array;
 
 use dynamic_array::DynamicArray;
 use exceptions::Exceptions;
+use static_array::StaticArray;
 
 pub fn da_implementation() -> Result<(), Exceptions> {
     println!("Implementación de un array dinámico");
@@ -76,6 +78,32 @@ pub fn da_implementation() -> Result<(), Exceptions> {
     println!("  2.  Inicialización con valores\n    {planets:?}");
     // 3. Insertion at the ending
     planets.push("Jupiter");
+    println!("  3. Insertar al final\n    {planets:?}");
+    // 4. Insertion at an arbitrary position
+    let position: usize = 0;
+    planets.insert(position, "Mercurio")?;
+    println!("  4.  Insertar en una posición arbitraria: (index: {position})\n    {planets:?}");
+    // 5. Deletion at an arbitrary position
+    let position: usize = 2;
+    let planet = planets.remove(position)?;
+    println!("  5. Eliminar de una posición arbitraria: (index: {position}, planeta: {planet:?})\n    {planets:?}");
+    let position: usize = 0;
+    let planet = planets.remove(position)?;
+    println!("  5. Eliminar de una posición arbitraria: (index: {position}, planeta: {planet:?})\n    {planets:?}");
+    Ok(())
+}
+
+pub fn aa_implementation() -> Result<(), Exceptions> {
+    println!("Implementación de un array estático");
+    // 1. Initialization
+    let planets: StaticArray<&str> = StaticArray::new(5);
+    println!("  1. Inicialización:\n    {planets:?}");
+    // 2. Initializacion with values
+    let mut planets: StaticArray<&str> =
+        StaticArray::with_values(5, &["Venus", "Plutón", "Tierra", "Marte"]);
+    println!("  2.  Inicialización con valores\n    {planets:?}");
+    // 3. Insertion at the ending
+    planets.push("Jupiter")?;
     println!("  3. Insertar al final\n    {planets:?}");
     // 4. Insertion at an arbitrary position
     let position: usize = 0;
