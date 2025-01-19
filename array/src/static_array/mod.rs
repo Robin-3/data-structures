@@ -369,6 +369,102 @@ impl<T: Clone> StaticArray<T> {
         Ok(())
     }
 
+    /// Elimina y devuelve el primer elemento del arreglo estático, desplazando los elementos restantes hacia la izquierda.
+    ///
+    /// # Retornos
+    /// - `Ok(T)`: Si el arreglo no está vacío, devuelve el valor del primer elemento eliminado.
+    /// - `Err(Exceptions::IndexOutOfBounds)`: Si el arreglo está vacío.
+    ///
+    /// # Comportamiento
+    /// - El primer elemento del arreglo dinámico se elimina y se devuelve.
+    /// - Los elementos restantes se desplazan una posición hacia la izquierda para llenar el espacio vacío.
+    ///
+    /// # Ejemplo
+    /// ```
+    /// # use array::StaticArray;
+    /// # use exceptions::Exceptions;
+    /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
+    ///
+    /// // Eliminar el primer elemento.
+    /// let shifted = array.shift();
+    /// assert_eq!(shifted, Ok(1)); // El valor eliminado es 1.
+    /// assert_eq!(array.len(), 2); // La longitud se reduce.
+    /// assert_eq!(array.get(0), Ok(&2)); // Los elementos se desplazan.
+    ///
+    /// // Intentar eliminar de un arreglo vacío retorna un error.
+    /// let mut empty_array: StaticArray<i32> = StaticArray::new(0);
+    /// assert!(empty_array.shift().is_err());
+    /// ```
+    ///
+    /// # Errors
+    /// Este método retornará `Exceptions::IndexOutOfBounds` si:
+    /// - El arreglo está vacío.
+    ///
+    /// # Notas
+    /// - El desplazamiento de elementos tiene un costo proporcional a la longitud actual del arreglo (`O(n)`), por lo que no es eficiente para usos repetidos en arreglos grandes.
+    pub fn shift(&mut self) -> Result<T, Exceptions> {
+        if self.is_empty() {
+            return Err(Exceptions::IndexOutOfBounds);
+        }
+
+        let Some(value) = self.array[0].clone() else {
+            return Err(Exceptions::IndexOutOfBounds);
+        };
+        let slice = &self.array.clone()[1..self.len];
+        for (i, v) in slice.iter().enumerate() {
+            self.array[i].clone_from(v);
+        }
+        self.array[self.len - 1] = None;
+        self.len -= 1;
+        Ok(value)
+    }
+
+    /// Elimina y devuelve el último elemento del arreglo estático.
+    ///
+    /// # Retornos
+    /// - `Ok(T)`: Si el arreglo no está vacío, devuelve el valor del último elemento eliminado.
+    /// - `Err(Exceptions::IndexOutOfBounds)`: Si el arreglo está vacío.
+    ///
+    /// # Comportamiento
+    /// - El último elemento del arreglo estático se elimina y se devuelve.
+    /// - La posición donde estaba el elemento eliminado se establece como `None`.
+    ///
+    /// # Ejemplo
+    /// ```
+    /// # use array::StaticArray;
+    /// # use exceptions::Exceptions;
+    /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
+    ///
+    /// // Eliminar el último elemento.
+    /// let popped = array.pop();
+    /// assert_eq!(popped, Ok(3)); // El valor eliminado es 3.
+    /// assert_eq!(array.len(), 2); // La longitud se reduce.
+    /// assert_eq!(array.get(1), Ok(&2)); // El último elemento ahora es 2.
+    ///
+    /// // Intentar eliminar de un arreglo vacío retorna un error.
+    /// let mut empty_array: StaticArray<i32> = StaticArray::new(0);
+    /// assert!(empty_array.pop().is_err());
+    /// ```
+    ///
+    /// # Errors
+    /// Este método retornará `Exceptions::IndexOutOfBounds` si:
+    /// - El arreglo está vacío.
+    ///
+    /// # Notas
+    /// - La operación tiene un costo constante (`O(1)`).
+    pub fn pop(&mut self) -> Result<T, Exceptions> {
+        if self.is_empty() {
+            return Err(Exceptions::IndexOutOfBounds);
+        }
+
+        let Some(value) = self.array[self.len - 1].clone() else {
+            return Err(Exceptions::IndexOutOfBounds);
+        };
+        self.array[self.len - 1] = None;
+        self.len -= 1;
+        Ok(value)
+    }
+
     /// Elimina el elemento en el índice especificado del arreglo dinámico y devuelve su valor.
     ///
     /// # Parámetros
@@ -517,6 +613,24 @@ impl<T: Clone> StaticArray<T> {
     #[must_use]
     pub const fn is_empty(&self) -> bool {
         self.len == 0
+    }
+}
+
+impl<T: Clone, const N: usize> From<&[T; N]> for StaticArray<T> {
+    fn from(values: &[T; N]) -> Self {
+        Self::with_values(N, values)
+    }
+}
+
+impl<T: Clone> From<&[T]> for StaticArray<T> {
+    fn from(values: &[T]) -> Self {
+        Self::with_values(values.len(), values)
+    }
+}
+
+impl<T: Clone> From<Vec<T>> for StaticArray<T> {
+    fn from(values: Vec<T>) -> Self {
+        Self::with_values(values.len(), values.as_slice())
     }
 }
 
