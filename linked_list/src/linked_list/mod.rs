@@ -217,6 +217,25 @@ impl<T: Clone> LinkedList<T> {
     }
 }
 
+impl<T: Copy + PartialEq> LinkedList<T> {
+    pub fn insert_after(&mut self, pred_value: T, value: T) -> Result<(), Exceptions> {
+        let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
+        while let Some(ref mut node) = pred {
+            if *node.get() == pred_value {
+                let mut new_node = Node::new(value);
+                new_node.set_next(node.get_next_mut().take());
+                node.set_next(Some(Box::new(new_node)));
+                self.len += 1;
+                return Ok(());
+            }
+            pred = node.get_next_mut();
+        }
+        Err(Exceptions::NoSuchElement(String::from(
+            "Predecessor not found",
+        )))
+    }
+}
+
 impl<T: Clone, const N: usize> From<&[T; N]> for LinkedList<T> {
     fn from(values: &[T; N]) -> Self {
         let mut list: Self = Self::default();
@@ -244,25 +263,6 @@ impl<T: Clone> From<Vec<T>> for LinkedList<T> {
             list.push(value.to_owned());
         }
         list
-    }
-}
-
-impl<T: Copy + PartialEq> LinkedList<T> {
-    pub fn insert_after(&mut self, pred_value: T, value: T) -> Result<(), Exceptions> {
-        let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
-        while let Some(ref mut node) = pred {
-            if *node.get() == pred_value {
-                let mut new_node = Node::new(value);
-                new_node.set_next(node.get_next_mut().take());
-                node.set_next(Some(Box::new(new_node)));
-                self.len += 1;
-                return Ok(());
-            }
-            pred = node.get_next_mut();
-        }
-        Err(Exceptions::NoSuchElement(String::from(
-            "Predecessor not found",
-        )))
     }
 }
 
