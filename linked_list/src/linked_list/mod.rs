@@ -4,7 +4,7 @@ use std::fmt::{Debug, Formatter, Result as fmtResult};
 
 pub struct LinkedList<T: Clone> {
     head: Option<Box<Node<T>>>,
-    size: usize,
+    len: usize,
 }
 
 pub struct LinkedListIterator<T: Clone> {
@@ -14,10 +14,7 @@ pub struct LinkedListIterator<T: Clone> {
 impl<T: Clone> LinkedList<T> {
     #[must_use]
     pub const fn new() -> Self {
-        Self {
-            head: None,
-            size: 0,
-        }
+        Self { head: None, len: 0 }
     }
 
     pub fn with_data(data: T) -> Self {
@@ -25,36 +22,44 @@ impl<T: Clone> LinkedList<T> {
 
         Self {
             head: Some(Box::new(node)),
-            size: 1,
+            len: 1,
         }
     }
 
-    // Return true if there are no node in the list
-    #[must_use]
-    pub const fn is_empty(&self) -> bool {
-        self.size == 0
-    }
-
-    // Returns the value at the given index in the dynamic array
-    pub fn get(&self, index: usize) -> Result<Option<T>, Exceptions> {
-        if index >= self.size {
+    pub fn get(&self, index: usize) -> Result<&T, Exceptions> {
+        if index >= self.len {
             return Err(Exceptions::IndexOutOfBounds);
         }
         let mut pred: &Option<Box<Node<T>>> = &self.head;
         let mut i: usize = 0;
         while let Some(ref node) = pred {
             if i == index {
-                return Ok(Some(node.get().to_owned()));
+                return Ok(node.get());
             }
             i += 1;
             pred = node.get_next();
         }
-        Ok(None)
+        Err(Exceptions::NoSuchElement(String::from("Element not found")))
     }
 
-    // Sets the value at the given index in the dynamic array to the given value
+    pub fn get_mut(&mut self, index: usize) -> Result<&mut T, Exceptions> {
+        if index >= self.len {
+            return Err(Exceptions::IndexOutOfBounds);
+        }
+        let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
+        let mut i: usize = 0;
+        while let Some(ref mut node) = pred {
+            if i == index {
+                return Ok(node.get_mut());
+            }
+            i += 1;
+            pred = node.get_next_mut();
+        }
+        Err(Exceptions::NoSuchElement(String::from("Element not found")))
+    }
+
     pub fn set(&mut self, index: usize, value: T) -> Result<(), Exceptions> {
-        if index >= self.size {
+        if index >= self.len {
             return Err(Exceptions::IndexOutOfBounds);
         }
         let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
@@ -67,20 +72,35 @@ impl<T: Clone> LinkedList<T> {
             i += 1;
             pred = node.get_next_mut();
         }
-        Ok(())
+        Err(Exceptions::NoSuchElement(String::from("Element not found")))
     }
 
-    // Inserts the node with specified value at the beginning of this list
-    pub fn insert_first(&mut self, value: T) {
+    pub fn unshift(&mut self, value: T) {
         let mut node: Node<T> = Node::new(value);
         node.set_next(self.head.take());
         self.head = Some(Box::new(node));
-        self.size += 1;
+        self.len += 1;
     }
 
-    // Inserts a new node after the node with the specified index
-    pub fn insert_index(&mut self, index: usize, value: T) -> Result<(), Exceptions> {
-        if index >= self.size {
+    pub fn push(&mut self, value: T) {
+        if self.is_empty() {
+            self.head = Some(Box::new(Node::new(value)));
+            self.len += 1;
+            return;
+        }
+        let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
+        while let Some(ref mut node) = pred {
+            if node.get_next().is_none() {
+                node.set_next(Some(Box::new(Node::new(value))));
+                self.len += 1;
+                return;
+            }
+            pred = node.get_next_mut();
+        }
+    }
+
+    pub fn insert(&mut self, index: usize, value: T) -> Result<(), Exceptions> {
+        if index >= self.len {
             return Err(Exceptions::IndexOutOfBounds);
         }
         let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
@@ -91,45 +111,103 @@ impl<T: Clone> LinkedList<T> {
                     let mut new_node = Node::new(value);
                     new_node.set_next(node.get_next_mut().take());
                     node.set_next(Some(Box::new(new_node)));
-                    self.size += 1;
+                    self.len += 1;
                     return Ok(());
                 }
                 i += 1;
                 pred = node.get_next_mut();
             }
         } else {
-            self.insert_first(value);
+            self.unshift(value);
+            return Ok(());
         }
-        Ok(())
+        Err(Exceptions::IndexOutOfBounds)
     }
 
-    // Inserts a new node with the specified value at the end of this list
-    pub fn insert_last(&mut self, value: T) {
-        if self.is_empty() {
-            self.head = Some(Box::new(Node::new(value.clone())));
-        }
-        let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
-        while let Some(ref mut node) = pred {
-            if node.get_next().is_none() {
-                node.set_next(Some(Box::new(Node::new(value))));
-                self.size += 1;
-                return;
+    pub fn shift(&mut self) -> Result<T, Exceptions> {
+        match self.head.take() {
+            Some(node) => {
+                node.get_next().clone_into(&mut self.head);
+                self.len -= 1;
+                Ok(node.get().to_owned())
             }
-            pred = node.get_next_mut();
+            None => Err(Exceptions::NoSuchElement(String::from("The list is empty"))),
         }
     }
 
-    // Deletes the first node from this list
-    // pub fn delete_first(&mut self) -> T {}
+    pub fn pop(&mut self) -> Result<T, Exceptions> {
+        match self.head.take() {
+            Some(mut node) => {
+                if node.get_next().is_none() {
+                    self.head = None;
+                    self.len -= 1;
+                    Ok(node.get().to_owned())
+                } else {
+                    let mut list: Self = Self::default();
+                    list.push(node.get().to_owned());
+                    let mut pred = &mut node;
+                    while let Some(ref mut current) = pred.get_next_mut() {
+                        if current.get_next().is_none() {
+                            let last_node = current;
+                            self.head = list.head;
+                            self.len -= 1;
+                            return Ok(last_node.get().to_owned());
+                        }
+                        list.push(current.get().to_owned());
+                        pred = current;
+                    }
+                    Err(Exceptions::NoSuchElement(String::from("Element not found")))
+                }
+            }
+            None => Err(Exceptions::NoSuchElement(String::from("The list is empty"))),
+        }
+    }
 
-    // Delete the first found node with the specified value
-    // pub fn delete_value(&mut self, value: T) -> T {}
+    pub fn remove(&mut self, index: usize) -> Result<T, Exceptions> {
+        match self.head.take() {
+            Some(mut node) => {
+                if node.get_next().is_none() {
+                    self.head = None;
+                    self.len -= 1;
+                    Ok(node.get().to_owned())
+                } else {
+                    let mut list: Self = Self::default();
+                    list.push(node.get().to_owned());
+                    let mut pred = &mut node;
+                    let mut i: usize = 0;
+                    let mut last_node: Option<Box<Node<T>>> = None;
+                    while let Some(ref mut current) = pred.get_next_mut() {
+                        if i == index - 1 {
+                            last_node = Some(current.clone());
+                        } else {
+                            list.push(current.get().to_owned());
+                        }
+                        i += 1;
+                        pred = current;
+                    }
+                    match last_node {
+                        Some(last_node) => {
+                            self.head = list.head;
+                            self.len -= 1;
+                            Ok(last_node.get().to_owned())
+                        }
+                        None => Err(Exceptions::NoSuchElement(String::from("Element not found"))),
+                    }
+                }
+            }
+            None => Err(Exceptions::NoSuchElement(String::from("The list is empty"))),
+        }
+    }
 
-    // Delete the first found node with the specified index
-    // pub fn delete_index(&mut self, index: usize) -> T {}
+    #[must_use]
+    pub const fn len(&self) -> usize {
+        self.len
+    }
 
-    // Deletes the last node from this list
-    // pub fn delete_last(&mut self) -> T {}
+    #[must_use]
+    pub const fn is_empty(&self) -> bool {
+        self.len == 0
+    }
 
     #[must_use]
     pub fn iter(&self) -> LinkedListIterator<T> {
@@ -139,8 +217,37 @@ impl<T: Clone> LinkedList<T> {
     }
 }
 
+impl<T: Clone, const N: usize> From<&[T; N]> for LinkedList<T> {
+    fn from(values: &[T; N]) -> Self {
+        let mut list: Self = Self::default();
+        for value in values {
+            list.push(value.to_owned());
+        }
+        list
+    }
+}
+
+impl<T: Clone> From<&[T]> for LinkedList<T> {
+    fn from(values: &[T]) -> Self {
+        let mut list: Self = Self::default();
+        for value in values {
+            list.push(value.to_owned());
+        }
+        list
+    }
+}
+
+impl<T: Clone> From<Vec<T>> for LinkedList<T> {
+    fn from(values: Vec<T>) -> Self {
+        let mut list: Self = Self::default();
+        for value in values {
+            list.push(value.to_owned());
+        }
+        list
+    }
+}
+
 impl<T: Copy + PartialEq> LinkedList<T> {
-    // Inserts a new node after the node with the specified predecessor value
     pub fn insert_after(&mut self, pred_value: T, value: T) -> Result<(), Exceptions> {
         let mut pred: &mut Option<Box<Node<T>>> = &mut self.head;
         while let Some(ref mut node) = pred {
@@ -148,7 +255,7 @@ impl<T: Copy + PartialEq> LinkedList<T> {
                 let mut new_node = Node::new(value);
                 new_node.set_next(node.get_next_mut().take());
                 node.set_next(Some(Box::new(new_node)));
-                self.size += 1;
+                self.len += 1;
                 return Ok(());
             }
             pred = node.get_next_mut();
@@ -169,7 +276,7 @@ impl<T: Clone> Iterator for LinkedListIterator<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let node: Option<Box<Node<T>>> = self.current.to_owned();
+        let node: Option<Box<Node<T>>> = self.current.clone();
         match node {
             Some(value) => {
                 self.current.clone_from(value.get_next());
