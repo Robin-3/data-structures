@@ -20,7 +20,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let array: StaticArray<i32> = StaticArray::new(5);
     ///
     /// // El arreglo tiene capacidad para 5 elementos, pero está vacío.
@@ -62,7 +62,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
     /// // El arreglo tiene capacidad para 5 elementos, pero solo 3 están inicializados.
@@ -119,7 +119,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let array = StaticArray::with_values(4, &[1, 2, 3]);
     /// assert_eq!(array.get(1), Ok(&2));
@@ -149,7 +149,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     /// if let Ok(value) = array.get_mut(1) {
@@ -182,7 +182,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     /// assert_eq!(array.set(1, 42), Ok(()));
@@ -219,7 +219,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     ///
     /// assert_eq!(array.len(), array.capacity());
@@ -276,7 +276,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let mut array = StaticArray::new(3);
     ///
@@ -326,7 +326,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let mut array = StaticArray::with_values(3, &[1, 2, 3]);
     ///
@@ -383,7 +383,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// # use exceptions::Exceptions;
     /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
@@ -430,7 +430,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let mut array = StaticArray::with_values(5, &[1, 2, 3]);
     ///
     /// // El arreglo tiene 3 elementos inicializados.
@@ -465,7 +465,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let mut array = StaticArray::new(4);
     ///
     /// // La capacidad inicial es 4.
@@ -495,7 +495,7 @@ impl<T: Clone> StaticArray<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use array::static_array::StaticArray;
+    /// # use array::StaticArray;
     /// let mut array = StaticArray::new(4);
     ///
     /// // Un arreglo recién creado está vacío.

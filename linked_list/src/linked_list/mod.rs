@@ -169,11 +169,11 @@ impl<T: Clone> Iterator for LinkedListIterator<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let node = self.current.clone();
+        let node: Option<Box<Node<T>>> = self.current.to_owned();
         match node {
             Some(value) => {
                 self.current.clone_from(value.get_next());
-                Some(value.get().clone())
+                Some(value.get().to_owned())
             }
             None => None,
         }

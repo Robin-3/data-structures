@@ -63,9 +63,9 @@ pub fn dynamic_array() {
 pub mod dynamic_array;
 pub mod static_array;
 
-use dynamic_array::DynamicArray;
+pub use dynamic_array::DynamicArray;
 use exceptions::Exceptions;
-use static_array::StaticArray;
+pub use static_array::StaticArray;
 
 pub fn da_implementation() -> Result<(), Exceptions> {
     println!("Implementación de un array dinámico");
