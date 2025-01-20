@@ -1,17 +1,17 @@
-pub mod linked_list;
+pub mod singly_linked_list;
 
 use exceptions::Exceptions;
-pub use linked_list::LinkedList;
+pub use singly_linked_list::SinglyLinkedList;
 
 pub fn ll_implementation() -> Result<(), Exceptions> {
     println!("Lista enlazada");
     let slice = &["Venus"];
-    let list: LinkedList<&str> = LinkedList::from(slice);
+    let list: SinglyLinkedList<&str> = SinglyLinkedList::from(slice);
     println!(
         "  1.1 Inicialización (está vacío: {0}):\n    {list:?}",
         list.is_empty()
     );
-    let mut list: LinkedList<&str> = LinkedList::new();
+    let mut list: SinglyLinkedList<&str> = SinglyLinkedList::new();
     println!(
         "  1.2 Inicialización (está vacío: {0}):\n    {list:?}",
         list.is_empty()

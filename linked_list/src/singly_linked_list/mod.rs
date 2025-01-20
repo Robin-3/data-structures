@@ -1,17 +1,17 @@
+mod node;
+mod singly_linked_list_iterator;
+
 use exceptions::Exceptions;
 use node::Node;
+use singly_linked_list_iterator::SinglyLinkedListIterator;
 use std::fmt::{Debug, Formatter, Result as fmtResult};
 
-pub struct LinkedList<T: Clone> {
+pub struct SinglyLinkedList<T: Clone> {
     head: Option<Box<Node<T>>>,
     len: usize,
 }
 
-pub struct LinkedListIterator<T: Clone> {
-    current: Option<Box<Node<T>>>,
-}
-
-impl<T: Clone> LinkedList<T> {
+impl<T: Clone> SinglyLinkedList<T> {
     /// Crea una nueva lista enlazada vacía.
     ///
     /// # Retornos
@@ -19,8 +19,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let list: LinkedList<i32> = LinkedList::new();
+    /// # use linked_list::SinglyLinkedList;
+    /// let list: SinglyLinkedList<i32> = SinglyLinkedList::new();
     ///
     /// // La lista está vacía.
     /// assert!(list.is_empty());
@@ -45,8 +45,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let list = LinkedList::with_data(42);
+    /// # use linked_list::SinglyLinkedList;
+    /// let list = SinglyLinkedList::with_data(42);
     ///
     /// // La lista tiene un nodo con el valor 42.
     /// assert_eq!(list.len(), 1);
@@ -77,9 +77,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let list = LinkedList::with_data(42);
+    /// let list = SinglyLinkedList::with_data(42);
     ///
     /// // Obtener el primer elemento.
     /// assert_eq!(list.get(0), Ok(&42));
@@ -124,9 +124,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::with_data(42);
+    /// let mut list = SinglyLinkedList::with_data(42);
     ///
     /// // Obtener y modificar el primer elemento.
     /// if let Ok(value) = list.get_mut(0) {
@@ -175,9 +175,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::with_data(42);
+    /// let mut list = SinglyLinkedList::with_data(42);
     ///
     /// // Modificar el valor del primer elemento.
     /// assert_eq!(list.set(0, 100), Ok(()));
@@ -224,8 +224,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let mut list = LinkedList::new();
+    /// # use linked_list::SinglyLinkedList;
+    /// let mut list = SinglyLinkedList::new();
     ///
     /// // Insertar elementos al inicio.
     /// list.unshift(10);
@@ -259,8 +259,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let mut list = LinkedList::new();
+    /// # use linked_list::SinglyLinkedList;
+    /// let mut list = SinglyLinkedList::new();
     ///
     /// // Insertar elementos al final.
     /// list.push(10);
@@ -309,9 +309,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::with_data(10);
+    /// let mut list = SinglyLinkedList::with_data(10);
     ///
     /// // Insertar un elemento en el índice 0 (al inicio).
     /// assert_eq!(list.insert(0, 5), Ok(()));
@@ -370,9 +370,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::with_data(42);
+    /// let mut list = SinglyLinkedList::with_data(42);
     ///
     /// // Eliminar el primer elemento.
     /// let shifted = list.shift();
@@ -414,9 +414,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::from(&[42, 100]);
+    /// let mut list = SinglyLinkedList::from(&[42, 100]);
     ///
     /// // Eliminar el último elemento.
     /// let popped = list.pop();
@@ -484,9 +484,9 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::from(&[10, 20, 30, 40]);
+    /// let mut list = SinglyLinkedList::from(&[10, 20, 30, 40]);
     ///
     /// // Eliminar el elemento en el índice 1.
     /// let removed = list.remove(3);
@@ -567,8 +567,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let mut list = LinkedList::from(&[1, 2, 3]);
+    /// # use linked_list::SinglyLinkedList;
+    /// let mut list = SinglyLinkedList::from(&[1, 2, 3]);
     ///
     /// // La lista tiene 3 elementos.
     /// assert_eq!(list.len(), 3);
@@ -598,8 +598,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let mut list = LinkedList::default();
+    /// # use linked_list::SinglyLinkedList;
+    /// let mut list = SinglyLinkedList::default();
     ///
     /// // Una lista recién creado está vacío.
     /// assert!(list.is_empty());
@@ -633,8 +633,8 @@ impl<T: Clone> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
-    /// let list = LinkedList::with_data(10);
+    /// # use linked_list::SinglyLinkedList;
+    /// let list = SinglyLinkedList::with_data(10);
     /// let mut iter = list.iter();
     ///
     /// // Recorrer los elementos de la lista.
@@ -642,7 +642,7 @@ impl<T: Clone> LinkedList<T> {
     /// assert_eq!(iter.next(), None); // No hay más elementos.
     ///
     /// // Usar un bucle para iterar.
-    /// let list = LinkedList::from(&[1, 2, 3]);
+    /// let list = SinglyLinkedList::from(&[1, 2, 3]);
     /// for value in list.iter() {
     ///     println!("{}", value);
     /// }
@@ -654,14 +654,12 @@ impl<T: Clone> LinkedList<T> {
     /// - La creación del iterador es una operación de tiempo constante (`O(1)`).
     /// - Este método está marcado como `#[must_use]`, lo que indica que su valor de retorno debe ser utilizado; de lo contrario, se generará una advertencia.
     #[must_use]
-    pub fn iter(&self) -> LinkedListIterator<T> {
-        LinkedListIterator {
-            current: self.head.clone(),
-        }
+    pub fn iter(&self) -> SinglyLinkedListIterator<T> {
+        SinglyLinkedListIterator::new(self.head.clone())
     }
 }
 
-impl<T: Copy + PartialEq> LinkedList<T> {
+impl<T: Copy + PartialEq> SinglyLinkedList<T> {
     /// Inserta un nuevo elemento después del primer nodo que contiene el valor especificado.
     ///
     /// # Parámetros
@@ -679,9 +677,9 @@ impl<T: Copy + PartialEq> LinkedList<T> {
     ///
     /// # Ejemplo
     /// ```
-    /// # use linked_list::LinkedList;
+    /// # use linked_list::SinglyLinkedList;
     /// # use exceptions::Exceptions;
-    /// let mut list = LinkedList::from(&[10, 20]);
+    /// let mut list = SinglyLinkedList::from(&[10, 20]);
     ///
     /// // Insertar un elemento después del nodo con valor 10.
     /// assert_eq!(list.insert_after(10, 15), Ok(()));
@@ -717,7 +715,7 @@ impl<T: Copy + PartialEq> LinkedList<T> {
     }
 }
 
-impl<T: Clone, const N: usize> From<&[T; N]> for LinkedList<T> {
+impl<T: Clone, const N: usize> From<&[T; N]> for SinglyLinkedList<T> {
     fn from(values: &[T; N]) -> Self {
         let mut list: Self = Self::default();
         for value in values {
@@ -727,7 +725,7 @@ impl<T: Clone, const N: usize> From<&[T; N]> for LinkedList<T> {
     }
 }
 
-impl<T: Clone> From<&[T]> for LinkedList<T> {
+impl<T: Clone> From<&[T]> for SinglyLinkedList<T> {
     fn from(values: &[T]) -> Self {
         let mut list: Self = Self::default();
         for value in values {
@@ -737,7 +735,7 @@ impl<T: Clone> From<&[T]> for LinkedList<T> {
     }
 }
 
-impl<T: Clone> From<Vec<T>> for LinkedList<T> {
+impl<T: Clone> From<Vec<T>> for SinglyLinkedList<T> {
     fn from(values: Vec<T>) -> Self {
         let mut list: Self = Self::default();
         for value in values {
@@ -747,37 +745,22 @@ impl<T: Clone> From<Vec<T>> for LinkedList<T> {
     }
 }
 
-impl<T: Clone> Default for LinkedList<T> {
+impl<T: Clone> Default for SinglyLinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T: Clone> Iterator for LinkedListIterator<T> {
+impl<T: Clone> IntoIterator for &SinglyLinkedList<T> {
     type Item = T;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let node: Option<Box<Node<T>>> = self.current.clone();
-        match node {
-            Some(value) => {
-                self.current.clone_from(value.get_next());
-                Some(value.get().to_owned())
-            }
-            None => None,
-        }
-    }
-}
-
-impl<T: Clone> IntoIterator for &LinkedList<T> {
-    type Item = T;
-    type IntoIter = LinkedListIterator<T>;
+    type IntoIter = SinglyLinkedListIterator<T>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
     }
 }
 
-impl<T: Clone + Debug> Debug for LinkedList<T> {
+impl<T: Clone + Debug> Debug for SinglyLinkedList<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmtResult {
         write!(f, "[")?;
         for (index, value) in self.iter().enumerate() {

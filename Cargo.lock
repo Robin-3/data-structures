@@ -27,9 +27,4 @@ name = "linked_list"
 version = "0.1.0"
 dependencies = [
  "exceptions",
- "node",
 ]
-
-[[package]]
-name = "node"
-version = "0.1.0"
