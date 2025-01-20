@@ -17,6 +17,7 @@ impl<T: Clone> Node<T> {
         &mut self.data
     }
 
+    #[allow(clippy::ref_option)]
     pub const fn get_next(&self) -> &Option<Box<Self>> {
         &self.next
     }

@@ -5,10 +5,8 @@ pub struct SinglyLinkedListIterator<T: Clone> {
 }
 
 impl<T: Clone> SinglyLinkedListIterator<T> {
-    pub fn new(head_node: Option<Box<Node<T>>>) -> Self {
-        Self {
-            current: head_node,
-        }
+    pub const fn new(head_node: Option<Box<Node<T>>>) -> Self {
+        Self { current: head_node }
     }
 }
 
