@@ -1,7 +1,7 @@
 pub mod linked_list;
 
 use exceptions::Exceptions;
-use linked_list::LinkedList;
+pub use linked_list::LinkedList;
 
 pub fn ll_implementation() -> Result<(), Exceptions> {
     println!("Lista enlazada");
