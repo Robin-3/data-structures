@@ -12,10 +12,10 @@ pub struct SinglyLinkedList<T: Clone> {
 }
 
 impl<T: Clone> SinglyLinkedList<T> {
-    /// Crea una nueva lista enlazada vacía.
+    /// Crea una nueva lista enlazada simple vacía.
     ///
     /// # Retornos
-    /// - Devuelve una instancia vacía de `LinkedList` sin nodos y con longitud inicial de `0`.
+    /// - Devuelve una instancia vacía de `SinglyLinkedList` sin nodos y con longitud inicial de `0`.
     ///
     /// # Ejemplo
     /// ```
@@ -35,13 +35,13 @@ impl<T: Clone> SinglyLinkedList<T> {
         Self { head: None, len: 0 }
     }
 
-    /// Crea una nueva lista enlazada con un único nodo inicializado con el valor proporcionado.
+    /// Crea una nueva lista enlazada simple con un único nodo inicializado con el valor proporcionado.
     ///
     /// # Parámetros
     /// - `data`: El valor inicial con el que se creará el primer nodo de la lista.
     ///
     /// # Retornos
-    /// - Devuelve una instancia de `LinkedList` con un único nodo que contiene el valor proporcionado y una longitud inicial de `1`.
+    /// - Devuelve una instancia de `SinglyLinkedList` con un único nodo que contiene el valor proporcionado y una longitud inicial de `1`.
     ///
     /// # Ejemplo
     /// ```
@@ -65,7 +65,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         }
     }
 
-    /// Obtiene una referencia inmutable al elemento en el índice especificado de la lista enlazada.
+    /// Obtiene una referencia inmutable al elemento en el índice especificado de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `index`: El índice del elemento que se desea obtener. Debe estar en el rango `0..self.len`.
@@ -112,7 +112,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         Err(Exceptions::NoSuchElement(String::from("Element not found")))
     }
 
-    /// Obtiene una referencia mutable al elemento en el índice especificado de la lista enlazada.
+    /// Obtiene una referencia mutable al elemento en el índice especificado de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `index`: El índice del elemento que se desea obtener. Debe estar en el rango `0..self.len`.
@@ -162,7 +162,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         Err(Exceptions::NoSuchElement(String::from("Element not found")))
     }
 
-    /// Establece un nuevo valor en el índice especificado de la lista enlazada.
+    /// Establece un nuevo valor en el índice especificado de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `index`: El índice del elemento que se desea modificar. Debe estar en el rango `0..self.len`.
@@ -212,7 +212,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         Err(Exceptions::NoSuchElement(String::from("Element not found")))
     }
 
-    /// Inserta un nuevo elemento al inicio de la lista enlazada.
+    /// Inserta un nuevo elemento al inicio de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `value`: El valor que se desea agregar al inicio de la lista.
@@ -247,7 +247,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         self.len += 1;
     }
 
-    /// Inserta un nuevo elemento al final de la lista enlazada.
+    /// Inserta un nuevo elemento al final de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `value`: El valor que se desea agregar al final de la lista.
@@ -292,7 +292,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         }
     }
 
-    /// Inserta un nuevo elemento en la lista enlazada en un índice específico.
+    /// Inserta un nuevo elemento en la lista enlazada simple en un índice específico.
     ///
     /// # Parámetros
     /// - `index`: El índice donde se desea insertar el nuevo elemento. Debe estar en el rango `0..=self.len`.
@@ -357,7 +357,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         Err(Exceptions::IndexOutOfBounds)
     }
 
-    /// Elimina y devuelve el primer elemento de la lista enlazada.
+    /// Elimina y devuelve el primer elemento de la lista enlazada simple.
     ///
     /// # Retornos
     /// - `Ok(T)`: Si la lista no está vacía, devuelve el valor del primer elemento eliminado.
@@ -401,7 +401,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         }
     }
 
-    /// Elimina y devuelve el último elemento de la lista enlazada.
+    /// Elimina y devuelve el último elemento de la lista enlazada simple.
     ///
     /// # Retornos
     /// - `Ok(T)`: Si la lista no está vacía, devuelve el valor del último elemento eliminado.
@@ -467,7 +467,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         }
     }
 
-    /// Elimina y devuelve el elemento en el índice especificado de la lista enlazada.
+    /// Elimina y devuelve el elemento en el índice especificado de la lista enlazada simple.
     ///
     /// # Parámetros
     /// - `index`: El índice del elemento que se desea eliminar. Debe estar en el rango `0..self.len`.
@@ -557,7 +557,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         }
     }
 
-    /// Devuelve la cantidad de elementos almacenados actualmente en la lista enlazada.
+    /// Devuelve la cantidad de elementos almacenados actualmente en la lista enlazada simple.
     ///
     /// # Retornos
     /// - `usize`: El número de elementos actualmente presentes en la lista.
@@ -590,7 +590,7 @@ impl<T: Clone> SinglyLinkedList<T> {
         self.len
     }
 
-    /// Verifica si la lista enlazada está vacía.
+    /// Verifica si la lista enlazada simple está vacía.
     ///
     /// # Retornos
     /// - `true`: Si la longitud actual de la lista (`len`) es `0`.
@@ -622,10 +622,10 @@ impl<T: Clone> SinglyLinkedList<T> {
         self.len == 0
     }
 
-    /// Crea un iterador para recorrer los elementos de la lista enlazada.
+    /// Crea un iterador para recorrer los elementos de la lista enlazada simple.
     ///
     /// # Retornos
-    /// - `LinkedListIterator<T>`: Un iterador que permite recorrer los elementos de la lista en orden desde el primer nodo hasta el último.
+    /// - `SinglyLinkedListIterator<T>`: Un iterador que permite recorrer los elementos de la lista en orden desde el primer nodo hasta el último.
     ///
     /// # Comportamiento
     /// - El iterador devuelve referencias inmutables a los valores almacenados en los nodos de la lista.
@@ -718,8 +718,8 @@ impl<T: Copy + PartialEq> SinglyLinkedList<T> {
 impl<T: Clone, const N: usize> From<&[T; N]> for SinglyLinkedList<T> {
     fn from(values: &[T; N]) -> Self {
         let mut list: Self = Self::default();
-        for value in values {
-            list.push(value.to_owned());
+        for value in values.iter().rev() {
+            list.unshift(value.to_owned());
         }
         list
     }
@@ -728,8 +728,8 @@ impl<T: Clone, const N: usize> From<&[T; N]> for SinglyLinkedList<T> {
 impl<T: Clone> From<&[T]> for SinglyLinkedList<T> {
     fn from(values: &[T]) -> Self {
         let mut list: Self = Self::default();
-        for value in values {
-            list.push(value.to_owned());
+        for value in values.iter().rev() {
+            list.unshift(value.to_owned());
         }
         list
     }
@@ -738,8 +738,8 @@ impl<T: Clone> From<&[T]> for SinglyLinkedList<T> {
 impl<T: Clone> From<Vec<T>> for SinglyLinkedList<T> {
     fn from(values: Vec<T>) -> Self {
         let mut list: Self = Self::default();
-        for value in values {
-            list.push(value.to_owned());
+        for value in values.iter().rev() {
+            list.unshift(value.to_owned());
         }
         list
     }
