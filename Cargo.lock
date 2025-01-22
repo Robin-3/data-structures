@@ -15,12 +15,20 @@ version = "0.1.0"
 dependencies = [
  "array",
  "exceptions",
+ "hash_table",
  "linked_list",
 ]
 
 [[package]]
 name = "exceptions"
 version = "0.1.0"
+
+[[package]]
+name = "hash_table"
+version = "0.1.0"
+dependencies = [
+ "exceptions",
+]
 
 [[package]]
 name = "linked_list"

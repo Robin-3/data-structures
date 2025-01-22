@@ -1,5 +1,11 @@
 [workspace]
-members = ["array", "data_structures", "exceptions", "linked_list"]
+members = [
+    "array",
+    "data_structures",
+    "exceptions",
+    "hash_table",
+    "linked_list"
+]
 resolver = "2"
 
 [workspace.dependencies]

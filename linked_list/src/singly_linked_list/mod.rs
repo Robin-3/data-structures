@@ -1,9 +1,9 @@
-mod node;
 mod iterator;
+mod node;
 
 use exceptions::Exceptions;
-use node::Node;
 use iterator::SinglyLinkedListIterator;
+use node::Node;
 use std::fmt::{Debug, Formatter, Result as fmtResult};
 
 #[derive(Clone)]
