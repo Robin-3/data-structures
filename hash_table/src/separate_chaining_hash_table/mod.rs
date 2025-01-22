@@ -153,6 +153,20 @@ impl<T: Clone> SeparateChainingHashTable<T> {
         h
     }
 
+    pub fn rehashing(&mut self, capacity: usize) {
+        let buckets = self.buckets.clone();
+        self.buckets = vec![Vec::new(); capacity].into_boxed_slice();
+        self.entries_len = 0;
+        // let mut keys_values: Vec<(&String, &T)> = Vec::with_capacity(self.entries_len);
+        for entries in buckets {
+            if !entries.is_empty() {
+                for entry in entries {
+                    let _ = self.insert(entry.get_key(), entry.get().to_owned());
+                }
+            }
+        }
+    }
+
     #[must_use]
     pub fn iter(&self) -> SeparateChainingHashTableIterator<T> {
         SeparateChainingHashTableIterator::new(self.get_entries())
