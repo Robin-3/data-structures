@@ -1,9 +1,11 @@
 mod entry;
+mod iterator;
 
 use entry::Entry;
 use exceptions::Exceptions;
+use iterator::SeparateChainingHashTableIterator;
+use std::fmt::{Debug, Formatter, Result as fmtResult};
 
-#[derive(Debug)]
 pub struct SeparateChainingHashTable<T: Clone> {
     buckets: Box<[Vec<Entry<T>>]>,
     entries_len: usize,
@@ -87,6 +89,45 @@ impl<T: Clone> SeparateChainingHashTable<T> {
     }
 
     #[must_use]
+    pub fn get_values(&self) -> Vec<&T> {
+        let mut values: Vec<&T> = Vec::with_capacity(self.entries_len);
+        for entries in &self.buckets {
+            if !entries.is_empty() {
+                for entry in entries {
+                    values.push(entry.get());
+                }
+            }
+        }
+        values
+    }
+
+    #[must_use]
+    pub fn get_keys(&self) -> Vec<&String> {
+        let mut keys: Vec<&String> = Vec::with_capacity(self.entries_len);
+        for entries in &self.buckets {
+            if !entries.is_empty() {
+                for entry in entries {
+                    keys.push(entry.get_key());
+                }
+            }
+        }
+        keys
+    }
+
+    #[must_use]
+    pub fn get_entries(&self) -> Vec<(&String, &T)> {
+        let mut keys_values: Vec<(&String, &T)> = Vec::with_capacity(self.entries_len);
+        for entries in &self.buckets {
+            if !entries.is_empty() {
+                for entry in entries {
+                    keys_values.push(entry.get_entry());
+                }
+            }
+        }
+        keys_values
+    }
+
+    #[must_use]
     pub const fn entries_len(&self) -> usize {
         self.entries_len
     }
@@ -110,5 +151,32 @@ impl<T: Clone> SeparateChainingHashTable<T> {
             h = h.wrapping_add(*val as usize);
         }
         h
+    }
+
+    #[must_use]
+    pub fn iter(&self) -> SeparateChainingHashTableIterator<T> {
+        SeparateChainingHashTableIterator::new(self.get_entries())
+    }
+}
+
+impl<'a, T: Clone> IntoIterator for &'a SeparateChainingHashTable<T> {
+    type Item = (&'a String, &'a T);
+    type IntoIter = SeparateChainingHashTableIterator<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<T: Clone + Debug> Debug for SeparateChainingHashTable<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmtResult {
+        write!(f, "{{")?;
+        for (index, (key, value)) in self.iter().enumerate() {
+            if index > 0 {
+                write!(f, ", ")?;
+            }
+            write!(f, "{key:?}: {value:?}")?;
+        }
+        write!(f, "}}")
     }
 }

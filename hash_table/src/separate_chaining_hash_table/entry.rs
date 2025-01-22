@@ -18,6 +18,10 @@ impl<T: Clone> Entry<T> {
         &mut self.value
     }
 
+    pub const fn get_key(&self) -> &String {
+        &self.key
+    }
+
     pub fn compare_key(&self, key: &String) -> bool {
         &self.key == key
     }
