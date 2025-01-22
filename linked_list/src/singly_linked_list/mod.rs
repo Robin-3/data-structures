@@ -1,11 +1,12 @@
 mod node;
-mod singly_linked_list_iterator;
+mod iterator;
 
 use exceptions::Exceptions;
 use node::Node;
-use singly_linked_list_iterator::SinglyLinkedListIterator;
+use iterator::SinglyLinkedListIterator;
 use std::fmt::{Debug, Formatter, Result as fmtResult};
 
+#[derive(Clone)]
 pub struct SinglyLinkedList<T: Clone> {
     head: Option<Box<Node<T>>>,
     len: usize,
