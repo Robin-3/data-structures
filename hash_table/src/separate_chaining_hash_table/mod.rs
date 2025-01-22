@@ -10,6 +10,7 @@ pub struct SeparateChainingHashTable<T: Clone> {
 }
 
 impl<T: Clone> SeparateChainingHashTable<T> {
+    #[must_use]
     pub fn new(capacity: usize) -> Self {
         let buckets: Box<[Vec<Entry<T>>]> = vec![Vec::new(); capacity].into_boxed_slice();
 
@@ -22,7 +23,7 @@ impl<T: Clone> SeparateChainingHashTable<T> {
     pub fn get<S: Into<String>>(&self, key: S) -> Result<&T, Exceptions> {
         let key: String = key.into();
         let index = Self::hash(&key) % self.buckets.len();
-        for entry in self.buckets[index].iter() {
+        for entry in &self.buckets[index] {
             if entry.compare_key(&key) {
                 return Ok(entry.get());
             }
@@ -33,7 +34,7 @@ impl<T: Clone> SeparateChainingHashTable<T> {
     pub fn get_mut<S: Into<String>>(&mut self, key: S) -> Result<&mut T, Exceptions> {
         let key: String = key.into();
         let index = Self::hash(&key) % self.buckets.len();
-        for entry in self.buckets[index].iter_mut() {
+        for entry in &mut self.buckets[index] {
             if entry.compare_key(&key) {
                 return Ok(entry.get_mut());
             }
@@ -44,7 +45,7 @@ impl<T: Clone> SeparateChainingHashTable<T> {
     pub fn set<S: Into<String>>(&mut self, key: S, value: T) -> Result<(), Exceptions> {
         let key: String = key.into();
         let index = Self::hash(&key) % self.buckets.len();
-        for entry in self.buckets[index].iter_mut() {
+        for entry in &mut self.buckets[index] {
             if entry.compare_key(&key) {
                 entry.set(value);
                 return Ok(());
@@ -85,15 +86,21 @@ impl<T: Clone> SeparateChainingHashTable<T> {
         }
     }
 
-    pub fn entries_len(&self) -> usize {
+    #[must_use]
+    pub const fn entries_len(&self) -> usize {
         self.entries_len
     }
 
+    #[must_use]
     pub fn buckets_len(&self) -> usize {
-        self.buckets.iter().filter(|entries| !entries.is_empty()).count()
+        self.buckets
+            .iter()
+            .filter(|entries| !entries.is_empty())
+            .count()
     }
 
-    pub fn is_empty(&self) -> bool {
+    #[must_use]
+    pub const fn is_empty(&self) -> bool {
         self.entries_len == 0
     }
 

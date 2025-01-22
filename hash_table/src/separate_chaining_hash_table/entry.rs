@@ -6,11 +6,11 @@ pub struct Entry<T: Clone> {
 }
 
 impl<T: Clone> Entry<T> {
-    pub fn new(key: String, value: T) -> Self {
+    pub const fn new(key: String, value: T) -> Self {
         Self { key, value }
     }
 
-    pub fn get(&self) -> &T {
+    pub const fn get(&self) -> &T {
         &self.value
     }
 
@@ -22,7 +22,7 @@ impl<T: Clone> Entry<T> {
         &self.key == key
     }
 
-    pub fn get_entry(&self) -> (&String, &T) {
+    pub const fn get_entry(&self) -> (&String, &T) {
         (&self.key, &self.value)
     }
 
